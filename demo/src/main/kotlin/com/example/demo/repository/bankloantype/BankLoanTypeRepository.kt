@@ -8,4 +8,5 @@ import java.util.Optional
 @Repository
 interface BankLoanTypeRepository : JpaRepository<BankLoanType, Long>{
     fun findByName(name: String): Optional<BankLoanType>
+    fun findByNameContainingIgnoreCase(name: String): List<BankLoanType>
 }

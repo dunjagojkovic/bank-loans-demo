@@ -6,6 +6,7 @@ import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
 import com.example.demo.mapper.bankloantype.request.BankLoanTypeMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeDetailsResponseMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
+import com.example.demo.model.bankloantype.BankLoanType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -38,5 +39,10 @@ class BankLoanTypeServiceImpl(
             .also {
                 log.info("Bank loan type with ID $id has been deleted")
             }
+    }
+
+    override fun findByName(name: String): List<BankLoanTypeDTO> {
+        return bankLoanTypeDao.findByName(name)
+                .map(bankLoanTypeResponseMapper::toDto)
     }
 }

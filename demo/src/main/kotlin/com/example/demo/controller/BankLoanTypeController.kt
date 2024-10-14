@@ -6,6 +6,7 @@ import com.example.demo.service.bankloantype.BankLoanTypeService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,13 +27,19 @@ class BankLoanTypeController(
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun findById(@RequestParam id: Long): BankLoanTypeDetailsDTO {
+    fun findById(@PathVariable id: Long): BankLoanTypeDetailsDTO {
         return bankLoanTypeService.findById(id)
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@RequestParam id: Long){
+    fun delete(@PathVariable id: Long){
         bankLoanTypeService.delete(id)
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    fun searchByName(@RequestParam name: String): List<BankLoanTypeDTO> {
+        return bankLoanTypeService.findByName(name)
     }
 }

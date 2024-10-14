@@ -6,4 +6,5 @@ interface BankLoanTypeDao {
     fun create(bankLoanType: BankLoanType): BankLoanType
     fun findById(id: Long) : BankLoanType
     fun delete(id: Long)
+    fun findByName(name: String): List<BankLoanType>
 }

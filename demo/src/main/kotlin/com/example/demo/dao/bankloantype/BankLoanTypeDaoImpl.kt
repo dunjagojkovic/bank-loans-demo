@@ -27,4 +27,8 @@ class BankLoanTypeDaoImpl(
     override fun delete(id: Long) {
         return id.also(this::findById).run(bankLoanTypeRepository::deleteById)
     }
+
+    override fun findByName(name: String): List<BankLoanType> {
+        return bankLoanTypeRepository.findByNameContainingIgnoreCase(name)
+    }
 }
