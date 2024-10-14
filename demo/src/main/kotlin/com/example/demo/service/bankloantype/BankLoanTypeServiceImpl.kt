@@ -2,7 +2,9 @@ package com.example.demo.service.bankloantype
 
 import com.example.demo.dao.bankloantype.BankLoanTypeDao
 import com.example.demo.dto.bankloantype.BankLoanTypeDTO
+import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
 import com.example.demo.mapper.bankloantype.request.BankLoanTypeMapper
+import com.example.demo.mapper.bankloantype.response.BankLoanTypeDetailsResponseMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Service
 class BankLoanTypeServiceImpl(
     private val bankLoanTypeDao: BankLoanTypeDao,
     private val bankLoanMapper: BankLoanTypeMapper,
-    private val bankLoanTypeResponseMapper: BankLoanTypeResponseMapper
+    private val bankLoanTypeResponseMapper: BankLoanTypeResponseMapper,
+    private val bankLoanTypeDetailsResponseMapper: BankLoanTypeDetailsResponseMapper
 ): BankLoanTypeService {
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -24,5 +27,9 @@ class BankLoanTypeServiceImpl(
             .also {
                 log.info("Bank loan type with ID ${it.id} has been created")
             }
+    }
+
+    override fun findById(id: Long): BankLoanTypeDetailsDTO {
+        return bankLoanTypeDao.findById(id).let(bankLoanTypeDetailsResponseMapper::toDto)
     }
 }

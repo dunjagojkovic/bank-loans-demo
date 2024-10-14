@@ -7,7 +7,7 @@ import jakarta.persistence.*
 @Table(name = "bank_loans", uniqueConstraints = [UniqueConstraint(columnNames = ["name"])])
 class BankLoanType(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long? = null,  //id pre cuvanja samog bank loan-a u bazi moze biti null jer ga baza automatski generise
     var name: String,
 ) {

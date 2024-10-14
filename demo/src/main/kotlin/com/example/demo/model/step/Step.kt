@@ -11,10 +11,10 @@ import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "defined_loan_steps", uniqueConstraints = [UniqueConstraint(columnNames = ["bank_loan_type_id"])])
+@Table(name = "defined_loan_steps")
 class Step(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long? = null,
     var name: String,
     var orderNumber: Int,
