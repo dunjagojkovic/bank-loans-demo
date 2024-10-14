@@ -8,17 +8,20 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "defined_loan_steps")
+@Table(name = "defined_loan_steps", uniqueConstraints = [UniqueConstraint(columnNames = ["bank_loan_type_id"])])
 class Step(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val name: String,
-    val orderNumber: Int,
-    val expectedDurationDay: Int,
-    @ManyToOne
-    @JoinColumn(name = "bank_loan_type_id", nullable = false)
-    val bankLoanType: BankLoanType
-)
+    var name: String,
+    var orderNumber: Int,
+    var expectedDurationDay: Int,
+    @ManyToOne(optional = false) //null je za kotlin a ne za bazu, mozda prepersis bude bio potreban
+    @JoinColumn(name = "bank_loan_type_id")
+    var bankLoanType: BankLoanType
+){
+
+}

@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<kotlin.version>1.9.25</kotlin.version>
+		<openapi.version>2.5.0</openapi.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,6 +78,11 @@
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-test-junit5</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${openapi.version}</version>
 		</dependency>
 	</dependencies>
 
