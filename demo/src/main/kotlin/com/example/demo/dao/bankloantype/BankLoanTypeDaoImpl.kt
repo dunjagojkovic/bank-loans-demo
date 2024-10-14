@@ -24,4 +24,7 @@ class BankLoanTypeDaoImpl(
             .orElseThrow { BankLoanTypeNotFound(id) }
     }
 
+    override fun delete(id: Long) {
+        return id.also(this::findById).run(bankLoanTypeRepository::deleteById)
+    }
 }

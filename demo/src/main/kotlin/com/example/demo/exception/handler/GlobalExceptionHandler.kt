@@ -19,7 +19,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleHttpStatusException(httpStatusException: HttpStatusException): ErrorResponseDTO{
         val errorResponseDTO = ErrorResponseDTO(httpStatusException.message, httpStatusException.code)
-            .also(::logError)
+            .also(this::logError)
         return errorResponseDTO
     }
 
@@ -27,7 +27,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleGenericException(genericException: Exception): ErrorResponseDTO {
         val errorResponseDTO = ErrorResponseDTO(genericException.message, ErrorCode.UNKNOWN_ERROR)
-            .also(::logError)
+            .also(this::logError)
         return errorResponseDTO
 
 

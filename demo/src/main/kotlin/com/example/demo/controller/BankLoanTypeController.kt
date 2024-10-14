@@ -4,6 +4,7 @@ import com.example.demo.dto.bankloantype.BankLoanTypeDTO
 import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
 import com.example.demo.service.bankloantype.BankLoanTypeService
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,5 +28,11 @@ class BankLoanTypeController(
     @ResponseStatus(HttpStatus.OK)
     fun findById(@RequestParam id: Long): BankLoanTypeDetailsDTO {
         return bankLoanTypeService.findById(id)
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@RequestParam id: Long){
+        bankLoanTypeService.delete(id)
     }
 }

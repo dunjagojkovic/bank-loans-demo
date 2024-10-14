@@ -32,4 +32,11 @@ class BankLoanTypeServiceImpl(
     override fun findById(id: Long): BankLoanTypeDetailsDTO {
         return bankLoanTypeDao.findById(id).let(bankLoanTypeDetailsResponseMapper::toDto)
     }
+
+    override fun delete(id: Long) {
+         bankLoanTypeDao.delete(id)
+            .also {
+                log.info("Bank loan type with ID $id has been deleted")
+            }
+    }
 }
