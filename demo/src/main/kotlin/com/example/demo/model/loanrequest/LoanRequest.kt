@@ -21,6 +21,6 @@ class LoanRequest(
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStatus,
     @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val steps:  Set<LoanRequestStep> = setOf() //todo change to immutable set
+    val steps:  Set<LoanRequestStep> = setOf()
 ) {
 }

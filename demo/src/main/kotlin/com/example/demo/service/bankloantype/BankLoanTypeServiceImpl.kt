@@ -33,7 +33,9 @@ class BankLoanTypeServiceImpl(
     }
 
     override fun findById(id: Long): BankLoanTypeDetailsDTO {
-        return bankLoanTypeDao.findById(id).let(bankLoanTypeDetailsResponseMapper::toDto)
+        return id
+            .let(bankLoanTypeDao::findById)
+            .let(bankLoanTypeDetailsResponseMapper::toDto)
     }
 
     override fun delete(id: Long) {
@@ -44,38 +46,14 @@ class BankLoanTypeServiceImpl(
     }
 
     override fun findByName(name: String): List<BankLoanTypeDTO> {
-        return bankLoanTypeDao.findByName(name)
-                .map(bankLoanTypeResponseMapper::toDto)
+        return name
+            .let(bankLoanTypeDao::findByName)
+            .map(bankLoanTypeResponseMapper::toDto)
     }
 
-    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO {
+    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO { //todo pitaj
         val bankLoan = bankLoanMapper.toEntity(bankLoanTypeDTO)
         val updatedBankLoanType = bankLoanTypeDao.update(bankLoan)
         return bankLoanTypeResponseMapper.toDto(updatedBankLoanType)
-
     }
-
-    private fun updateOrCreateStep(bankLoanTypeToEdit: BankLoanType, updatedSteps: Set<StepDTO>){
-      updatedSteps.forEach{ stepDTO ->
-          val existingStep = bankLoanTypeToEdit.steps.find { it.id == stepDTO.id }
-          existingStep?.let {
-              it.name = stepDTO.name
-              it.bankLoanType = bankLoanTypeToEdit
-              it.expectedDurationDay = stepDTO.expectedDurationDay
-              it.orderNumber = stepDTO.orderNumber
-          }
-              .run {
-                  val newStep = Step(
-                      name = stepDTO.name,
-                      orderNumber = stepDTO.orderNumber,
-                      expectedDurationDay = stepDTO.expectedDurationDay,
-                      bankLoanType = bankLoanTypeToEdit
-                  )
-                  bankLoanTypeToEdit.steps.add(newStep)
-              }
-
-      }
-      }
-
-
 }

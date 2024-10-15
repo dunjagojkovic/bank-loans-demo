@@ -29,13 +29,9 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         val errorResponseDTO = ErrorResponseDTO(genericException.message, ErrorCode.UNKNOWN_ERROR)
             .also(this::logError)
         return errorResponseDTO
-
-
     }
+
     private fun logError(errorResponseDTO: ErrorResponseDTO) {
-        log.info(
-            errorResponseDTO.message
-        )
+        log.info(errorResponseDTO.message)
     }
-
 }

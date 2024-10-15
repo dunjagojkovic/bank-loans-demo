@@ -1,7 +1,6 @@
 package com.example.demo.mapper.step.response
 
 import com.example.demo.dto.step.StepDTO
-import com.example.demo.model.bankloantype.BankLoanType
 import com.example.demo.model.step.Step
 import org.springframework.stereotype.Component
 
