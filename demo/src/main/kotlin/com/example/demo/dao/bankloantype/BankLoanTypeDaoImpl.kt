@@ -12,11 +12,10 @@ class BankLoanTypeDaoImpl(
     private val bankLoanTypeRepository: BankLoanTypeRepository
 ): BankLoanTypeDao {
     override fun create(bankLoanType: BankLoanType): BankLoanType {
-        return bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
-            ?.let {
-                throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
-            }.run { bankLoanTypeRepository.save(bankLoanType) }
-    } //todo: also za validaciju umesto let
+        return bankLoanType
+            .also(this::validateBankLoanTypeName)
+            .let(bankLoanTypeRepository::save)
+    }
 
     override fun findById(id: Long): BankLoanType {
         return bankLoanTypeRepository.findById(id)
@@ -24,7 +23,9 @@ class BankLoanTypeDaoImpl(
     }
 
     override fun delete(id: Long) {
-        return id.also(this::findById).run(bankLoanTypeRepository::deleteById)
+        return id
+            .also(this::findById)
+            .run(bankLoanTypeRepository::deleteById)
     }
 
     override fun findByName(name: String): List<BankLoanType> {
@@ -39,6 +40,13 @@ class BankLoanTypeDaoImpl(
                         throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
                     }
             }
-            .run { bankLoanTypeRepository.save(bankLoanType) }
+            .apply { bankLoanTypeRepository.save(bankLoanType) }
     }//todo: validate pomocna fun (findbyid, findbyname) i nju pozvati u also
+
+    private fun validateBankLoanTypeName(bankLoanType: BankLoanType) {
+        bankLoanTypeRepository.findByName(bankLoanType.name)
+            .ifPresent { throw BankLoanTypeNameAlreadyExists(bankLoanType.name) }
+    }
+
+    //private fun validateBankLoanType
 }
