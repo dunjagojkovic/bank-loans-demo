@@ -22,5 +22,4 @@ class LoanRequest(
     var status: LoanRequestStatus,
     @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
     val steps:  Set<LoanRequestStep> = setOf()
-) {
-}
+)

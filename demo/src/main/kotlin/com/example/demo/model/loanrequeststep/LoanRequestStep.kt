@@ -20,5 +20,4 @@ class LoanRequestStep (
     val spentDurationDay: Int,
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStepStatus
-){
-}
+)

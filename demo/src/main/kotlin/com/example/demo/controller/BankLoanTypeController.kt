@@ -40,6 +40,6 @@ class BankLoanTypeController(
     fun update(@PathVariable id: Long, @RequestBody bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO{
         return bankLoanTypeDTO
             .apply { this.id = id }
-            .let { bankLoanTypeService.update(bankLoanTypeDTO) }
+            .let(bankLoanTypeService::update)
     }
 }

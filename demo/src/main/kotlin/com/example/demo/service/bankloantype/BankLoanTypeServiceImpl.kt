@@ -3,12 +3,9 @@ package com.example.demo.service.bankloantype
 import com.example.demo.dao.bankloantype.BankLoanTypeDao
 import com.example.demo.dto.bankloantype.BankLoanTypeDTO
 import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
-import com.example.demo.dto.step.StepDTO
 import com.example.demo.mapper.bankloantype.request.BankLoanTypeMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeDetailsResponseMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
-import com.example.demo.model.bankloantype.BankLoanType
-import com.example.demo.model.step.Step
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -51,9 +48,10 @@ class BankLoanTypeServiceImpl(
             .map(bankLoanTypeResponseMapper::toDto)
     }
 
-    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO { //todo pitaj
-        val bankLoan = bankLoanMapper.toEntity(bankLoanTypeDTO)
-        val updatedBankLoanType = bankLoanTypeDao.update(bankLoan)
-        return bankLoanTypeResponseMapper.toDto(updatedBankLoanType)
+    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO {
+       return bankLoanTypeDTO
+            .let(bankLoanMapper::toEntity)
+            .let(bankLoanTypeDao::update)
+            .let(bankLoanTypeResponseMapper::toDto)
     }
 }

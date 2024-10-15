@@ -1,6 +1,6 @@
 package com.example.demo.exception.handler
 
-import com.example.demo.dto.error.ErrorResponseDTO
+import com.example.demo.dto.error.ErrorDTO
 import com.example.demo.exception.base.HttpStatusException
 import com.example.demo.exception.specific.ErrorCode
 import org.slf4j.Logger
@@ -17,21 +17,21 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(HttpStatusException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleHttpStatusException(httpStatusException: HttpStatusException): ErrorResponseDTO{
-        val errorResponseDTO = ErrorResponseDTO(httpStatusException.message, httpStatusException.code)
+    fun handleHttpStatusException(httpStatusException: HttpStatusException): ErrorDTO {
+        val errorDTO = ErrorDTO(httpStatusException.message, httpStatusException.code)
             .also(this::logError)
-        return errorResponseDTO
+        return errorDTO
     }
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleGenericException(genericException: Exception): ErrorResponseDTO {
-        val errorResponseDTO = ErrorResponseDTO(genericException.message, ErrorCode.UNKNOWN_ERROR)
+    fun handleGenericException(genericException: Exception): ErrorDTO {
+        val errorDTO = ErrorDTO(genericException.message, ErrorCode.UNKNOWN_ERROR)
             .also(this::logError)
-        return errorResponseDTO
+        return errorDTO
     }
 
-    private fun logError(errorResponseDTO: ErrorResponseDTO) {
-        log.info(errorResponseDTO.message)
+    private fun logError(errorDTO: ErrorDTO) {
+        log.info(errorDTO.message)
     }
 }

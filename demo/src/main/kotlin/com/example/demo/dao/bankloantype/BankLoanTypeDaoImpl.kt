@@ -11,13 +11,12 @@ import kotlin.jvm.optionals.getOrNull
 class BankLoanTypeDaoImpl(
     private val bankLoanTypeRepository: BankLoanTypeRepository
 ): BankLoanTypeDao {
-    override fun create(bankLoanType: BankLoanType): BankLoanType { //todo: pitaj da li treba uopste poziv ka bazi s obzirom da je unique constraint def na nivou tabele za name pa je suvisan poziv ka bazi? kako unaprediti ovaj kod
-        bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
+    override fun create(bankLoanType: BankLoanType): BankLoanType {
+        return bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
             ?.let {
                 throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
-            }
-       return bankLoanTypeRepository.save(bankLoanType)
-    }
+            }.run { bankLoanTypeRepository.save(bankLoanType) }
+    } //todo: also za validaciju umesto let
 
     override fun findById(id: Long): BankLoanType {
         return bankLoanTypeRepository.findById(id)
@@ -41,5 +40,5 @@ class BankLoanTypeDaoImpl(
                     }
             }
             .run { bankLoanTypeRepository.save(bankLoanType) }
-    }
+    }//todo: validate pomocna fun (findbyid, findbyname) i nju pozvati u also
 }

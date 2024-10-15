@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
 
 @Entity
 @Table(name = "defined_loan_steps")
@@ -22,6 +21,4 @@ class Step(
     @ManyToOne(optional = false) //null je za kotlin a ne za bazu, mozda prepersis bude bio potreban
     @JoinColumn(name = "bank_loan_type_id")
     var bankLoanType: BankLoanType
-){
-
-}
+)

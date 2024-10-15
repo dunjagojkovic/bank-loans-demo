@@ -7,5 +7,4 @@ data class BankLoanTypeDetailsDTO(
     var totalExpectedDays: Int,
     var steps: MutableSet<StepDTO> = mutableSetOf(),
     @JsonIgnore val id: Long? = null
-
 )

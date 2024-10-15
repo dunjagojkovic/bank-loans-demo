@@ -18,5 +18,4 @@ class BankLoanTypeMapper(
                 it.steps = bankLoanTypeDTO.steps.map { stepDTO -> stepMapper.toEntity(stepDTO, it) }.toMutableSet() }
         }
     }
-
 }
