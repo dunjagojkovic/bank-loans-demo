@@ -11,7 +11,7 @@ import kotlin.jvm.optionals.getOrNull
 class BankLoanTypeDaoImpl(
     private val bankLoanTypeRepository: BankLoanTypeRepository
 ): BankLoanTypeDao {
-    override fun create(bankLoanType: BankLoanType): BankLoanType { //todo: pitaj da li treba uopste poziv ka bazi s obzirom da je unique constraint def na nivou tabele z aname pa je suvisan poziv ka bazi? kako unaprediti ovaj kod
+    override fun create(bankLoanType: BankLoanType): BankLoanType { //todo: pitaj da li treba uopste poziv ka bazi s obzirom da je unique constraint def na nivou tabele za name pa je suvisan poziv ka bazi? kako unaprediti ovaj kod
         bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
             ?.let {
                 throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
@@ -30,5 +30,16 @@ class BankLoanTypeDaoImpl(
 
     override fun findByName(name: String): List<BankLoanType> {
         return bankLoanTypeRepository.findByNameContainingIgnoreCase(name)
+    }
+
+    override fun update(bankLoanType: BankLoanType): BankLoanType {
+        return this.findById(bankLoanType.id!!)
+            .also {
+                bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
+                    ?.let {
+                        throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
+                    }
+            }
+            .run { bankLoanTypeRepository.save(bankLoanType) }
     }
 }

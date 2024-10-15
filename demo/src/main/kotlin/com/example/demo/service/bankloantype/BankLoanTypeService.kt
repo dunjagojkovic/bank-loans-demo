@@ -9,4 +9,5 @@ interface BankLoanTypeService {
     fun findById(id: Long): BankLoanTypeDetailsDTO
     fun delete(id: Long)
     fun findByName(name: String): List<BankLoanTypeDTO>
+    fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO
 }

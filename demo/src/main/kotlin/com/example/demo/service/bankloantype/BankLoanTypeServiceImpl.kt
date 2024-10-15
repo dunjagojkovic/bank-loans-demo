@@ -3,10 +3,12 @@ package com.example.demo.service.bankloantype
 import com.example.demo.dao.bankloantype.BankLoanTypeDao
 import com.example.demo.dto.bankloantype.BankLoanTypeDTO
 import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
+import com.example.demo.dto.step.StepDTO
 import com.example.demo.mapper.bankloantype.request.BankLoanTypeMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeDetailsResponseMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
 import com.example.demo.model.bankloantype.BankLoanType
+import com.example.demo.model.step.Step
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -45,4 +47,35 @@ class BankLoanTypeServiceImpl(
         return bankLoanTypeDao.findByName(name)
                 .map(bankLoanTypeResponseMapper::toDto)
     }
+
+    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO {
+        val bankLoan = bankLoanMapper.toEntity(bankLoanTypeDTO)
+        val updatedBankLoanType = bankLoanTypeDao.update(bankLoan)
+        return bankLoanTypeResponseMapper.toDto(updatedBankLoanType)
+
+    }
+
+    private fun updateOrCreateStep(bankLoanTypeToEdit: BankLoanType, updatedSteps: Set<StepDTO>){
+      updatedSteps.forEach{ stepDTO ->
+          val existingStep = bankLoanTypeToEdit.steps.find { it.id == stepDTO.id }
+          existingStep?.let {
+              it.name = stepDTO.name
+              it.bankLoanType = bankLoanTypeToEdit
+              it.expectedDurationDay = stepDTO.expectedDurationDay
+              it.orderNumber = stepDTO.orderNumber
+          }
+              .run {
+                  val newStep = Step(
+                      name = stepDTO.name,
+                      orderNumber = stepDTO.orderNumber,
+                      expectedDurationDay = stepDTO.expectedDurationDay,
+                      bankLoanType = bankLoanTypeToEdit
+                  )
+                  bankLoanTypeToEdit.steps.add(newStep)
+              }
+
+      }
+      }
+
+
 }
