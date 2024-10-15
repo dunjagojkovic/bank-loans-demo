@@ -5,7 +5,6 @@ import com.example.demo.exception.specific.BankLoanTypeNotFound
 import com.example.demo.model.bankloantype.BankLoanType
 import com.example.demo.repository.bankloantype.BankLoanTypeRepository
 import org.springframework.stereotype.Service
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class BankLoanTypeDaoImpl(
@@ -18,35 +17,35 @@ class BankLoanTypeDaoImpl(
     }
 
     override fun findById(id: Long): BankLoanType {
-        return bankLoanTypeRepository.findById(id)
-            .orElseThrow { BankLoanTypeNotFound(id) }
+        return id
+            .let(bankLoanTypeRepository::findById)
+            .orElseThrow{ BankLoanTypeNotFound(id) }
     }
 
     override fun delete(id: Long) {
-        return id
-            .also(this::findById)
-            .run(bankLoanTypeRepository::deleteById)
+        id.also(this::findById).run(bankLoanTypeRepository::deleteById)
     }
 
     override fun findByName(name: String): List<BankLoanType> {
-        return bankLoanTypeRepository.findByNameContainingIgnoreCase(name)
+        return name
+            .let(bankLoanTypeRepository::findByNameContainingIgnoreCase)
     }
 
     override fun update(bankLoanType: BankLoanType): BankLoanType {
-        return this.findById(bankLoanType.id!!)
-            .also {
-                bankLoanTypeRepository.findByName(bankLoanType.name).getOrNull()
-                    ?.let {
-                        throw BankLoanTypeNameAlreadyExists(bankLoanType.name)
-                    }
-            }
-            .apply { bankLoanTypeRepository.save(bankLoanType) }
-    }//todo: validate pomocna fun (findbyid, findbyname) i nju pozvati u also
-
-    private fun validateBankLoanTypeName(bankLoanType: BankLoanType) {
-        bankLoanTypeRepository.findByName(bankLoanType.name)
-            .ifPresent { throw BankLoanTypeNameAlreadyExists(bankLoanType.name) }
+        return bankLoanType
+            .also(this::validateBankLoanTypeUpdate)
+            .let(bankLoanTypeRepository::save)
     }
 
-    //private fun validateBankLoanType
+    private fun validateBankLoanTypeName(bankLoanType: BankLoanType) {
+        bankLoanType.name
+            .let(bankLoanTypeRepository::findByName)
+            .ifPresent{ throw BankLoanTypeNameAlreadyExists(it.name) }
+    }
+
+    private fun validateBankLoanTypeUpdate(bankLoanType: BankLoanType) {
+        bankLoanType.id?.let { bankLoanTypeRepository.findById(it).orElseThrow { BankLoanTypeNotFound(bankLoanType.id) } }
+        validateBankLoanTypeName(bankLoanType)
+        //todo add check for loan request connected to this bank loan type
+    }
 }
