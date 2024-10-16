@@ -12,14 +12,15 @@ class LoanRequest(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne
-    @JoinColumn(name = "bank_loan_type", nullable = false)
-    val bankLoanType: BankLoanType,
     val clientFirstName: String,
     val clientLastName: String,
     val amount: BigDecimal,
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStatus,
-    @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val steps:  Set<LoanRequestStep> = setOf()
-)
+) {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "bank_loan_type", nullable = false)
+    var bankLoanType: BankLoanType? = null
+    @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.MERGE], orphanRemoval = true)
+    var steps:  Set<LoanRequestStep> = setOf()
+}

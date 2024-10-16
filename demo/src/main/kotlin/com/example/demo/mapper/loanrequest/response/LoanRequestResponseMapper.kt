@@ -1,0 +1,34 @@
+package com.example.demo.mapper.loanrequest.response
+
+import com.example.demo.dto.loanrequest.response.CreateLoanRequestResponseDTO
+import com.example.demo.dto.loanrequeststep.LoanRequestStepDTO
+import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
+import com.example.demo.model.enums.LoanRequestStatus
+import com.example.demo.model.loanrequest.LoanRequest
+import org.springframework.stereotype.Component
+
+@Component
+class LoanRequestResponseMapper(
+    private val bankLoanTypeResponseMapper: BankLoanTypeResponseMapper
+) {
+    fun toDto(loanRequest: LoanRequest): CreateLoanRequestResponseDTO{
+        return with(loanRequest){
+            CreateLoanRequestResponseDTO(
+                bankLoanTypeDTO = bankLoanTypeResponseMapper.toDto(bankLoanType!!),
+                clientFirstName,
+                clientLastName,
+                amount,
+                LoanRequestStatus.PROCESSING,
+                steps.map { loanRequestStep -> LoanRequestStepDTO(
+                    loanRequestStep.step.name,
+                    loanRequestStep.step.orderNumber,
+                    loanRequestStep.step.expectedDurationDay,
+                    loanRequestStep.spentDurationDay,
+                    loanRequestStep.status,
+                    loanRequestStep.step.id,
+                    id
+                )  }.toSet()
+            )
+        }
+    }
+}

@@ -44,7 +44,7 @@ class BankLoanTypeDaoImpl(
     }
 
     private fun validateBankLoanTypeUpdate(bankLoanType: BankLoanType) {
-        bankLoanType.id?.let { bankLoanTypeRepository.findById(it).orElseThrow { BankLoanTypeNotFound(bankLoanType.id) } }
+        bankLoanType.id?.let { this.findById(it) }
         validateBankLoanTypeName(bankLoanType)
         //todo add check for loan request connected to this bank loan type
     }

@@ -11,10 +11,10 @@ class LoanRequestStep (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "loan_request_id")
     val loanRequest: LoanRequest,
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "step_id")
     val step: Step,
     val spentDurationDay: Int,
