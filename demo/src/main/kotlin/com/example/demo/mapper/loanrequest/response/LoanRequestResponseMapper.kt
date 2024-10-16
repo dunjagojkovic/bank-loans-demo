@@ -13,21 +13,28 @@ class LoanRequestResponseMapper(
 ) {
     fun toDto(loanRequest: LoanRequest): CreateLoanRequestResponseDTO{
         return with(loanRequest){
+            var totalExpectedDurationDay = 0
+
+            loanRequest.bankLoanType!!.steps.forEach{step -> totalExpectedDurationDay += step.expectedDurationDay }
+
             CreateLoanRequestResponseDTO(
-                bankLoanTypeDTO = bankLoanTypeResponseMapper.toDto(bankLoanType!!),
+                bankLoanType!!.name,
+                totalExpectedDurationDay,
                 clientFirstName,
                 clientLastName,
                 amount,
                 LoanRequestStatus.PROCESSING,
-                steps.map { loanRequestStep -> LoanRequestStepDTO(
-                    loanRequestStep.step.name,
-                    loanRequestStep.step.orderNumber,
-                    loanRequestStep.step.expectedDurationDay,
-                    loanRequestStep.spentDurationDay,
-                    loanRequestStep.status,
-                    loanRequestStep.step.id,
-                    id
-                )  }.toSet()
+                steps.map { loanRequestStep ->
+                    LoanRequestStepDTO(
+                        loanRequestStep.step.name,
+                        loanRequestStep.step.orderNumber,
+                        loanRequestStep.step.expectedDurationDay,
+                        loanRequestStep.spentDurationDay,
+                        loanRequestStep.status,
+                        loanRequestStep.step.id,
+                        id
+                    )
+                }.toSet()
             )
         }
     }
