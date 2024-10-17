@@ -4,4 +4,5 @@ import com.example.demo.model.loanrequest.LoanRequest
 
 interface LoanRequestDao {
     fun create(loanRequest: LoanRequest): LoanRequest
+    fun findByStatus(status: String): List<LoanRequest>
 }

@@ -13,4 +13,9 @@ class LoanRequestDaoImpl(
         return loanRequest
             .let(loanRequestRepository::save)
     }
+
+    override fun findByStatus(status: String): List<LoanRequest> {
+        return status
+            .let(loanRequestRepository::findByStatusContainingIgnoreCase)
+    }
 }

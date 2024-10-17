@@ -1,6 +1,6 @@
 package com.example.demo.mapper.loanrequest.response
 
-import com.example.demo.dto.loanrequest.response.CreateLoanRequestResponseDTO
+import com.example.demo.dto.loanrequest.response.LoanRequestResponseDTO
 import com.example.demo.dto.loanrequeststep.LoanRequestStepDTO
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
 import com.example.demo.model.enums.LoanRequestStatus
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component
 class LoanRequestResponseMapper(
     private val bankLoanTypeResponseMapper: BankLoanTypeResponseMapper
 ) {
-    fun toDto(loanRequest: LoanRequest): CreateLoanRequestResponseDTO{
+    fun toDto(loanRequest: LoanRequest): LoanRequestResponseDTO{
         return with(loanRequest){
             var totalExpectedDurationDay = 0
 
             loanRequest.bankLoanType!!.steps.forEach{step -> totalExpectedDurationDay += step.expectedDurationDay }
 
-            CreateLoanRequestResponseDTO(
+            LoanRequestResponseDTO(
                 bankLoanType!!.name,
                 totalExpectedDurationDay,
                 clientFirstName,
@@ -34,7 +34,8 @@ class LoanRequestResponseMapper(
                         loanRequestStep.step.id,
                         id
                     )
-                }.toSet()
+                }.toSet(),
+                id
             )
         }
     }

@@ -5,7 +5,7 @@ import com.example.demo.model.enums.LoanRequestStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.math.BigDecimal
 
-data class CreateLoanRequestResponseDTO(
+data class LoanRequestResponseDTO(
     val bankLoanTypeName: String,
     val totalExpectedDurationDay: Int,
     val clientFirstName: String,
