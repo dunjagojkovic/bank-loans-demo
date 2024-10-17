@@ -4,6 +4,7 @@ import com.example.demo.dto.loanrequest.request.CreateLoanRequestDTO
 import com.example.demo.dto.loanrequest.response.CreateLoanRequestResponseDTO
 import com.example.demo.service.loanrequest.LoanRequestService
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

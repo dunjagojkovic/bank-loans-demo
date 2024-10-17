@@ -18,9 +18,15 @@ class LoanRequest(
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStatus,
 ) {
-    @ManyToOne(optional = false)
+
+    @PrePersist
+    fun prePersist(){
+        steps.forEach{ it.loanRequest = this}
+    }
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_loan_type", nullable = false)
     var bankLoanType: BankLoanType? = null
-    @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.MERGE], orphanRemoval = true)
+    @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
     var steps:  Set<LoanRequestStep> = setOf()
 }

@@ -9,14 +9,14 @@ import jakarta.persistence.*
 @Table(name = "loan_request_steps")
 class LoanRequestStep (
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long? = null,
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_request_id")
-    val loanRequest: LoanRequest,
-    @ManyToOne(optional = false)
+    var loanRequest: LoanRequest,
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "step_id")
-    val step: Step,
+    var step: Step,
     val spentDurationDay: Int,
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStepStatus

@@ -11,6 +11,7 @@ import com.example.demo.model.loanrequeststep.LoanRequestStep
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LoanRequestServiceImpl(
@@ -21,6 +22,7 @@ class LoanRequestServiceImpl(
 ) : LoanRequestService {
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
+    @Transactional
     override fun create(loanRequestDTO: CreateLoanRequestDTO): CreateLoanRequestResponseDTO {
         //check if dto.bankloanid exists if not throw exception, if yes set bankloan in loanrequest i steps od tog bank loana namapiraj na loanrequeststeps i onda te loanrequeststeps dodas na loanrequest
         return loanRequestDTO
@@ -28,7 +30,7 @@ class LoanRequestServiceImpl(
             .also {
                 it.bankLoanType = bankLoanTypeDao.findById(loanRequestDTO.bankLoanTypeId!!)
                 it.steps = it.bankLoanType!!.steps.map { s -> LoanRequestStep(
-                    s.id,
+                    id = null, //todo change to id??? zasto nece
                     it,
                     s,
                     0,

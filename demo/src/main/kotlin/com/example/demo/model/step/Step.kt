@@ -18,7 +18,7 @@ class Step(
     var name: String,
     var orderNumber: Int,
     var expectedDurationDay: Int,
-    @ManyToOne(optional = false) //null je za kotlin a ne za bazu, mozda prepersis bude bio potreban
+    @ManyToOne(optional = false) //null je za kotlin a ne za bazu, mozda prepersist bude bio potreban
     @JoinColumn(name = "bank_loan_type_id")
     var bankLoanType: BankLoanType
 )
