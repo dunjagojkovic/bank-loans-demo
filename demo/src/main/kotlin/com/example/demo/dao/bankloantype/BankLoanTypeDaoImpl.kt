@@ -2,13 +2,16 @@ package com.example.demo.dao.bankloantype
 
 import com.example.demo.exception.specific.BankLoanTypeNameAlreadyExists
 import com.example.demo.exception.specific.BankLoanTypeNotFound
+import com.example.demo.exception.specific.LoanRequestForBankLoanTypeExists
 import com.example.demo.model.bankloantype.BankLoanType
 import com.example.demo.repository.bankloantype.BankLoanTypeRepository
+import com.example.demo.repository.loanrequest.LoanRequestRepository
 import org.springframework.stereotype.Service
 
 @Service
 class BankLoanTypeDaoImpl(
-    private val bankLoanTypeRepository: BankLoanTypeRepository
+    private val bankLoanTypeRepository: BankLoanTypeRepository,
+    private val loanRequestRepository: LoanRequestRepository
 ): BankLoanTypeDao {
     override fun create(bankLoanType: BankLoanType): BankLoanType {
         return bankLoanType
@@ -23,7 +26,7 @@ class BankLoanTypeDaoImpl(
     }
 
     override fun delete(id: Long) {
-        id.also(this::findById).run(bankLoanTypeRepository::deleteById)
+        id.also(this::validateBankLoanTypeDelete).run(bankLoanTypeRepository::deleteById)
     }
 
     override fun findByName(name: String): List<BankLoanType> {
@@ -43,9 +46,20 @@ class BankLoanTypeDaoImpl(
             .ifPresent{ throw BankLoanTypeNameAlreadyExists(it.name) }
     }
 
+    //todo refactor
+    private fun checkExistingLoanRequests(bankLoanType: BankLoanType) {
+        if(loanRequestRepository.existsByBankLoanType(bankLoanType)){
+            throw LoanRequestForBankLoanTypeExists(bankLoanType.id!!)
+        }
+    }
+    //todo refactor
     private fun validateBankLoanTypeUpdate(bankLoanType: BankLoanType) {
-        bankLoanType.id?.let { this.findById(it) }
+        bankLoanType.id?.let(this::findById)
+             .also{this.checkExistingLoanRequests(it!!)}
         validateBankLoanTypeName(bankLoanType)
-        //todo add check for loan request connected to this bank loan type
+    }
+
+    private fun validateBankLoanTypeDelete(bankLoanTypeId: Long) {
+       this.findById(bankLoanTypeId).also { this.checkExistingLoanRequests(it) }
     }
 }
