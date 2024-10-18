@@ -1,13 +1,14 @@
 package com.example.demo.mapper.loanrequest.response
 
-import com.example.demo.dto.loanrequest.request.LoanRequestStepDTO
 import com.example.demo.dto.loanrequest.response.LoanRequestResponseDTO
+import com.example.demo.dto.loanrequest.request.LoanRequestStepDTO
+import com.example.demo.model.enums.LoanRequestStatus
 import com.example.demo.model.loanrequest.LoanRequest
 import org.springframework.stereotype.Component
 
 @Component
-class LoanRequestResponseMapper {
-    fun toDto(loanRequest: LoanRequest): LoanRequestResponseDTO {
+class CreateLoanRequestResponseMapper {
+    fun toDto(loanRequest: LoanRequest): LoanRequestResponseDTO{
         return with(loanRequest){
             var totalExpectedDurationDay = 0
 
@@ -19,7 +20,7 @@ class LoanRequestResponseMapper {
                 clientFirstName,
                 clientLastName,
                 amount,
-                status,
+                LoanRequestStatus.PROCESSING,
                 steps.map { loanRequestStep ->
                     LoanRequestStepDTO(
                         loanRequestStep.step.name,

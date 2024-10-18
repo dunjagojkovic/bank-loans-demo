@@ -17,7 +17,7 @@ class LoanRequest(
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStatus,
 ) {
-
+    //todo obrisi?
     @PrePersist
     fun prePersist(){
         steps.forEach{ it.loanRequest = this}

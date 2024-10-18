@@ -29,7 +29,7 @@ class BankLoanTypeController(
         bankLoanTypeService.delete(id)
     }
 
-    @GetMapping("/search")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun searchByName(@RequestParam name: String): List<BankLoanTypeDTO> {
         return bankLoanTypeService.findByName(name)

@@ -12,7 +12,7 @@ class LoanRequestNotFound(id: Long): NotFoundException(
     "Loan request with id[$id] doesn't exists!"
 )
 
-class LoanRequestStepNotFound(id: Long): NotFoundException(
+class LoanRequestStepNotFound(id: Long, loanRequestId: Long): NotFoundException(
     ErrorCode.LOAN_REQUEST_STEP_DOES_NOT_EXISTS_ERROR,
-    "Loan request step with id[$id] doesn't exists!"
+    "Loan request step with id[$id] doesn't exists for loan request with id[$loanRequestId]!"
 )

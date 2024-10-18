@@ -4,8 +4,11 @@ import com.example.demo.dao.bankloantype.BankLoanTypeDao
 import com.example.demo.dao.loanrequest.LoanRequestDao
 import com.example.demo.dto.loanrequest.request.CreateLoanRequestDTO
 import com.example.demo.dto.loanrequest.response.LoanRequestResponseDTO
+import com.example.demo.dto.loanrequest.response.UpdateLoanRequestStepStatusResponseDTO
 import com.example.demo.mapper.loanrequest.request.CreateLoanRequestMapper
+import com.example.demo.mapper.loanrequest.response.CreateLoanRequestResponseMapper
 import com.example.demo.mapper.loanrequest.response.LoanRequestResponseMapper
+import com.example.demo.mapper.loanrequest.response.UpdateLoanRequestStepStatusResponseMapper
 import com.example.demo.model.enums.LoanRequestStatus
 import com.example.demo.model.enums.LoanRequestStepStatus
 import com.example.demo.model.loanrequest.LoanRequest
@@ -19,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional
 class LoanRequestServiceImpl(
     private val loanRequestDao: LoanRequestDao,
     private val createLoanRequestMapper: CreateLoanRequestMapper,
-    private val loanRequestResponseMapper: LoanRequestResponseMapper,
-    private val bankLoanTypeDao: BankLoanTypeDao
+    private val createLoanRequestResponseMapper: CreateLoanRequestResponseMapper,
+    private val updateLoanRequestStepStatusResponseMapper: UpdateLoanRequestStepStatusResponseMapper,
+    private val bankLoanTypeDao: BankLoanTypeDao,
+    private val loanRequestResponseMapper: LoanRequestResponseMapper
 ) : LoanRequestService {
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -39,7 +44,7 @@ class LoanRequestServiceImpl(
                 ) }.toSet()
             }
             .let(loanRequestDao::create)
-            .let(loanRequestResponseMapper::toDto)
+            .let(createLoanRequestResponseMapper::toDto)
             .also {
                 log.info("Loan request with ID ${it.id} has been created")
             }
@@ -48,10 +53,10 @@ class LoanRequestServiceImpl(
     override fun findByStatus(status: String): List<LoanRequestResponseDTO> {
         return status
             .let(loanRequestDao::findByStatus)
-            .map(loanRequestResponseMapper::toDto)
+            .map(loanRequestResponseMapper::toDto) //todo check status
     }
     //todo refactor!!!!!!!
-    override fun updateStatus(loanRequest: LoanRequest) {
+    override fun updateStatus(loanRequest: LoanRequest): UpdateLoanRequestStepStatusResponseDTO{
         val allStepsSuccessful = loanRequest.steps.all {
             loanRequestStep -> loanRequestStep.status == LoanRequestStepStatus.SUCCESSFUL
         } //todo validate metoda koju ces pozvati u ifu
@@ -67,6 +72,6 @@ class LoanRequestServiceImpl(
         } else {
             LoanRequestStatus. PROCESSING
         }
-        loanRequestDao.updateStatus(loanRequest)
+        return loanRequestDao.updateStatus(loanRequest).let(updateLoanRequestStepStatusResponseMapper::toDto)
     }
 }
