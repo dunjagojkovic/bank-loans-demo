@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.*
 class LoanRequestController(
     private val loanRequestService: LoanRequestService
 ) {
-    @PostMapping("/bank-loan-id/{id}")
+    //todo pitaj ovaj endpoint moze ovako da ostane jer search nije na nivou odredjenog bank loan type vec general no za sve loan requestove
+    @PostMapping("/bank-loan-id/{bankLoanTypeId}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@PathVariable id: Long, @RequestBody loanRequestDTO: CreateLoanRequestDTO): LoanRequestResponseDTO {
+    fun create(@PathVariable bankLoanTypeId: Long, @RequestBody loanRequestDTO: CreateLoanRequestDTO): LoanRequestResponseDTO {
         return loanRequestDTO
-            .apply { this.bankLoanTypeId = id }
+            .apply { this.bankLoanTypeId = bankLoanTypeId }
             .let(loanRequestService::create)
     }
 
-    @GetMapping("/search-by-status")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun searchByStatus(@RequestParam status: String): List<LoanRequestResponseDTO> {
         return loanRequestService.findByStatus(status)

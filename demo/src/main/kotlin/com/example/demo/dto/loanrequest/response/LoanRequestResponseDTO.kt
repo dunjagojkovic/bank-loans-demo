@@ -1,6 +1,6 @@
 package com.example.demo.dto.loanrequest.response
 
-import com.example.demo.dto.loanrequeststep.LoanRequestStepDTO
+import com.example.demo.dto.loanrequest.request.LoanRequestStepDTO
 import com.example.demo.model.enums.LoanRequestStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.math.BigDecimal

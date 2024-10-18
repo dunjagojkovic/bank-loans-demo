@@ -1,7 +1,7 @@
 package com.example.demo.mapper.loanrequest.response
 
 import com.example.demo.dto.loanrequest.response.LoanRequestResponseDTO
-import com.example.demo.dto.loanrequeststep.LoanRequestStepDTO
+import com.example.demo.dto.loanrequest.request.LoanRequestStepDTO
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
 import com.example.demo.model.enums.LoanRequestStatus
 import com.example.demo.model.loanrequest.LoanRequest

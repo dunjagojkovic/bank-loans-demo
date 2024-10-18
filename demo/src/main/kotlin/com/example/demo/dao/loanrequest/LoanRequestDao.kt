@@ -7,4 +7,6 @@ interface LoanRequestDao {
     fun create(loanRequest: LoanRequest): LoanRequest
     fun findByStatus(status: String): List<LoanRequest>
     fun existsByBankLoanType(bankLoanType: BankLoanType): Boolean
+    fun updateStatus(loanRequest: LoanRequest): LoanRequest
+    fun findById(id: Long): LoanRequest
 }

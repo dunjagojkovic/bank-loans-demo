@@ -2,7 +2,6 @@ package com.example.demo.model.loanrequest
 
 import com.example.demo.model.bankloantype.BankLoanType
 import com.example.demo.model.enums.LoanRequestStatus
-import com.example.demo.model.loanrequeststep.LoanRequestStep
 import jakarta.persistence.*
 import java.math.BigDecimal
 

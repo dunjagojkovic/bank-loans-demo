@@ -1,7 +1,6 @@
-package com.example.demo.model.loanrequeststep
+package com.example.demo.model.loanrequest
 
 import com.example.demo.model.enums.LoanRequestStepStatus
-import com.example.demo.model.loanrequest.LoanRequest
 import com.example.demo.model.step.Step
 import jakarta.persistence.*
 
@@ -17,7 +16,7 @@ class LoanRequestStep (
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "step_id")
     var step: Step,
-    val spentDurationDay: Int,
+    var spentDurationDay: Int,
     @Enumerated(EnumType.STRING)
     var status: LoanRequestStepStatus
 )

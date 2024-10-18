@@ -1,4 +1,4 @@
-package com.example.demo.dto.loanrequeststep
+package com.example.demo.dto.loanrequest.request
 
 import com.example.demo.model.enums.LoanRequestStepStatus
 import com.fasterxml.jackson.annotation.JsonIgnore

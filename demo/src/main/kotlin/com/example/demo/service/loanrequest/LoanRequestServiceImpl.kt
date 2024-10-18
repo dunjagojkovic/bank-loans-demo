@@ -6,8 +6,10 @@ import com.example.demo.dto.loanrequest.request.CreateLoanRequestDTO
 import com.example.demo.dto.loanrequest.response.LoanRequestResponseDTO
 import com.example.demo.mapper.loanrequest.request.CreateLoanRequestMapper
 import com.example.demo.mapper.loanrequest.response.LoanRequestResponseMapper
+import com.example.demo.model.enums.LoanRequestStatus
 import com.example.demo.model.enums.LoanRequestStepStatus
-import com.example.demo.model.loanrequeststep.LoanRequestStep
+import com.example.demo.model.loanrequest.LoanRequest
+import com.example.demo.model.loanrequest.LoanRequestStep
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -47,5 +49,24 @@ class LoanRequestServiceImpl(
         return status
             .let(loanRequestDao::findByStatus)
             .map(loanRequestResponseMapper::toDto)
+    }
+    //todo refactor!!!!!!!
+    override fun updateStatus(loanRequest: LoanRequest) {
+        val allStepsSuccessful = loanRequest.steps.all {
+            loanRequestStep -> loanRequestStep.status == LoanRequestStepStatus.SUCCESSFUL
+        }
+
+        val anyStepFailed = loanRequest.steps.any {
+            loanRequestStep -> loanRequestStep.status == LoanRequestStepStatus.FAILED
+        }
+
+        if(anyStepFailed) {
+            loanRequest.status = LoanRequestStatus.REJECTED
+        } else if(allStepsSuccessful) {
+            loanRequest.status = LoanRequestStatus.APPROVED
+        } else {
+            loanRequest.status = LoanRequestStatus. PROCESSING
+        }
+        loanRequestDao.updateStatus(loanRequest)
     }
 }
