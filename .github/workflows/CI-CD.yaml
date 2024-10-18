@@ -32,4 +32,4 @@ jobs:
           name: package
           path: target
       - name: docker-build
-        run: docker-build -t demo-app .
+        run: docker build -t demo-app .
