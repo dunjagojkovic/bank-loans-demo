@@ -31,7 +31,7 @@ class LoanRequestServiceImpl(
             .also {
                 it.bankLoanType = bankLoanTypeDao.findById(loanRequestDTO.bankLoanTypeId!!)
                 it.steps = it.bankLoanType!!.steps.map { s -> LoanRequestStep(
-                    null, //todo change to id??? zasto nece
+                    null,
                     it,
                     s,
                     0,
@@ -54,18 +54,18 @@ class LoanRequestServiceImpl(
     override fun updateStatus(loanRequest: LoanRequest) {
         val allStepsSuccessful = loanRequest.steps.all {
             loanRequestStep -> loanRequestStep.status == LoanRequestStepStatus.SUCCESSFUL
-        }
+        } //todo validate metoda koju ces pozvati u ifu
 
         val anyStepFailed = loanRequest.steps.any {
             loanRequestStep -> loanRequestStep.status == LoanRequestStepStatus.FAILED
-        }
+        } //todo validate metoda koju ces pozvati u ifu
 
-        if(anyStepFailed) {
-            loanRequest.status = LoanRequestStatus.REJECTED
+        loanRequest.status = if(anyStepFailed) {
+            LoanRequestStatus.REJECTED
         } else if(allStepsSuccessful) {
-            loanRequest.status = LoanRequestStatus.APPROVED
+             LoanRequestStatus.APPROVED
         } else {
-            loanRequest.status = LoanRequestStatus. PROCESSING
+            LoanRequestStatus. PROCESSING
         }
         loanRequestDao.updateStatus(loanRequest)
     }

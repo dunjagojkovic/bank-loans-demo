@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface LoanRequestRepository: JpaRepository<LoanRequest, Long> {
     @Query("SELECT lr FROM LoanRequest lr WHERE UPPER(lr.status) LIKE CONCAT('%', UPPER(:status), '%')")
-    fun findByStatusContainingIgnoreCase(@Param("status") status: String): List<LoanRequest>
+    fun findByStatusContainingIgnoreCase(@Param("status") status: String): List<LoanRequest> //todo enum umesto string pokusaj
     fun existsByBankLoanType(bankLoanType: BankLoanType): Boolean
 }

@@ -12,6 +12,6 @@ class LoanRequestStepController(
 ) {
     @PutMapping("/{stepId}/status")
     @ResponseStatus(HttpStatus.OK)
-    fun updateStepStatus(@PathVariable loanRequestId: Long, @PathVariable stepId: Long, @RequestBody newInfo: UpdateLoanRequestStepStatusDTO) {
+    fun updateStatus(@PathVariable loanRequestId: Long, @PathVariable stepId: Long, @RequestBody newInfo: UpdateLoanRequestStepStatusDTO) {
     }
 }
