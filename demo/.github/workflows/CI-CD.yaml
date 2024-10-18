@@ -1,0 +1,37 @@
+name: ci-cd
+on: #sta ce naterati ovaj workfloww da se izvrsi, najcesce: push, pr kad se otvori, dispatch
+  push:
+    branches: ["main"]
+jobs:
+  java-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: java-setup
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+      - name: maven-build
+        run: ./mvnw --batch-mode package -DskipTests
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: target/*.jar
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: download-artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: target
+      - name: docker-build
+        run: docker-build -t demo-app .
+
+
