@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: db
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
@@ -8,5 +9,18 @@ services:
       - '5433:5432'
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - test
+  spring-app:
+    image: demo-app
+    networks:
+      - test
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5433/postgres
+    ports:
+      - '8080:8080'
+networks:
+  test:
+    driver: bridge
 volumes:
   db:
