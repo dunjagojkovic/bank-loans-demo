@@ -16,6 +16,7 @@ class BankLoanTypeDetailsResponseMapper(
         return with(bankLoanType) {
             BankLoanTypeDetailsDTO(
                 totalExpectedDays,
+                name,
                 steps.map { step -> stepResponseMapper.toDto(step) }.toMutableSet(),
                 id
                 )

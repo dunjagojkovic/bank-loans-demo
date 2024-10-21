@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 
 data class BankLoanTypeDetailsDTO(
     var totalExpectedDays: Int,
+    var name: String,
     var steps: MutableSet<StepDTO> = mutableSetOf(),
     @JsonIgnore val id: Long? = null
 )
