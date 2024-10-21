@@ -34,7 +34,7 @@ class LoanRequestStepServiceImpl(
 
     private fun validate(stepId: Long, stepToUpdate: LoanRequestStep?) {
         if (stepToUpdate == null) {
-            throw LoanRequestStepNotFound(stepId, 0 ) //todo check this loan request id
+            throw LoanRequestStepNotFound(stepId, 0 ) //todo change this loan request id
         }
 
         if (stepToUpdate.status != LoanRequestStepStatus.PENDING) {
@@ -50,8 +50,4 @@ class LoanRequestStepServiceImpl(
             throw PreviousStepsNotSuccessful(stepToUpdate.loanRequest.id!!, stepId)
         }
     }
-
-    private fun validatePreviousSteps(it: LoanRequestStep, stepToUpdate: LoanRequestStep) =
-        (it.step.orderNumber < stepToUpdate.step.orderNumber && it.status != LoanRequestStepStatus.SUCCESSFUL)
-
 }

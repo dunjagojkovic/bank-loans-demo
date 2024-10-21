@@ -20,7 +20,7 @@ class CreateLoanRequestResponseMapper {
                 clientFirstName,
                 clientLastName,
                 amount,
-                LoanRequestStatus.PROCESSING,
+                status,
                 steps.map { loanRequestStep ->
                     LoanRequestStepDTO(
                         loanRequestStep.step.name,

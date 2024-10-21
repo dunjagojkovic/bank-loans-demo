@@ -20,7 +20,7 @@ class LoanRequestResponseMapper {
                 clientLastName,
                 amount,
                 status,
-                steps.map { loanRequestStep ->
+                steps.map { loanRequestStep -> //todo extract to new fun
                     LoanRequestStepDTO(
                         loanRequestStep.step.name,
                         loanRequestStep.step.orderNumber,

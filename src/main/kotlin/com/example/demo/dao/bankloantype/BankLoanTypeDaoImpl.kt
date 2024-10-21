@@ -15,7 +15,7 @@ class BankLoanTypeDaoImpl(
 ): BankLoanTypeDao {
     override fun create(bankLoanType: BankLoanType): BankLoanType {
         return bankLoanType
-            .also(this::validateBankLoanTypeName)
+            .also(::validateBankLoanTypeName)
             .let(bankLoanTypeRepository::save)
     }
 
@@ -26,7 +26,7 @@ class BankLoanTypeDaoImpl(
     }
 
     override fun delete(id: Long) {
-        id.also(this::validateBankLoanTypeDelete).run(bankLoanTypeRepository::deleteById)
+        id.also(::validateBankLoanTypeDelete).run(bankLoanTypeRepository::deleteById)
     }
 
     override fun findByName(name: String): List<BankLoanType> {
@@ -36,7 +36,7 @@ class BankLoanTypeDaoImpl(
 
     override fun update(bankLoanType: BankLoanType): BankLoanType {
         return bankLoanType
-            .also(this::validateBankLoanTypeUpdate)
+            .also(::validateBankLoanTypeUpdate)
             .let(bankLoanTypeRepository::save)
     }
 
@@ -54,12 +54,12 @@ class BankLoanTypeDaoImpl(
     }
     //todo refactor
     private fun validateBankLoanTypeUpdate(bankLoanType: BankLoanType) {
-        bankLoanType.id?.let(this::findById)
-             .also{this.checkExistingLoanRequests(it!!)}
+        bankLoanType.id?.let(::findById)
+             .also{checkExistingLoanRequests(it!!)}
         validateBankLoanTypeName(bankLoanType)
     }
 
     private fun validateBankLoanTypeDelete(bankLoanTypeId: Long) {
-       this.findById(bankLoanTypeId).also { this.checkExistingLoanRequests(it) }
+       findById(bankLoanTypeId).also { checkExistingLoanRequests(it) }
     }
 }
