@@ -41,7 +41,7 @@ class LoanRequestServiceImpl(
                     s,
                     0,
                     LoanRequestStepStatus.PENDING,
-                ) }.toSet()
+                ) }.toMutableSet()
             }
             .let(loanRequestDao::create)
             .let(createLoanRequestResponseMapper::toDto)

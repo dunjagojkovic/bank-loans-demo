@@ -8,6 +8,9 @@ spring:
   jpa:
     show-sql: false
     properties:
+      javax:
+        persistence:
+          create-database-schemas: true
       hibernate:
         default_schema: demo
         dialect: org.hibernate.dialect.PostgreSQLDialect

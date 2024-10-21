@@ -27,5 +27,5 @@ class LoanRequest(
     @JoinColumn(name = "bank_loan_type", nullable = false)
     var bankLoanType: BankLoanType? = null
     @OneToMany(mappedBy = "loanRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var steps:  Set<LoanRequestStep> = setOf()
+    var steps:  MutableSet<LoanRequestStep> = mutableSetOf()
 }
