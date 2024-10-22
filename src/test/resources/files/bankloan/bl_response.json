@@ -1,0 +1,30 @@
+{
+  "name": "Home Renovation Loan",
+  "steps": [
+    {
+      "name": "Receive Approval",
+      "orderNumber": 4,
+      "expectedDurationDay": 5
+    },
+    {
+      "name": "Start Renovation Work",
+      "orderNumber": 5,
+      "expectedDurationDay": 30
+    },
+    {
+      "name": "Assess Current Condition",
+      "orderNumber": 1,
+      "expectedDurationDay": 2
+    },
+    {
+      "name": "Submit Loan Application",
+      "orderNumber": 3,
+      "expectedDurationDay": 1
+    },
+    {
+      "name": "Create Renovation Plan",
+      "orderNumber": 2,
+      "expectedDurationDay": 3
+    }
+  ]
+}

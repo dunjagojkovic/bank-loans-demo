@@ -22,8 +22,12 @@ import kotlin.test.Test
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.*
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvFileSource
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.get
+import java.io.File
 
 
 @SpringBootTest
@@ -51,14 +55,39 @@ class BankLoanTypeControllerIT @Autowired constructor(
         dbCleanupService.truncate()
     }
 
-    @Test
+    @ParameterizedTest
     @Order(1)
-    fun `Create - successful - 201`() {
+    @CsvFileSource(files = ["src/test/resources/files/csv/create_bank_loan_files.csv"])
+    fun `Create - successful - 201`(inputFileUrl: String, outputFileUrl: String) {
+        val requestBody: String = File(inputFileUrl).readText()
+
+        val actual = mockMvc.post(url) {
+            contentType = MediaType.APPLICATION_JSON
+            content = requestBody
+        }.andExpect {
+            status { isCreated() }
+        }.andReturn().response.contentAsString
+
+        val expected = File(outputFileUrl).readText()
+        assertThat(objectMapper.readValue<BankLoanTypeDTO>(actual))
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(objectMapper.readValue<BankLoanTypeDTO>(expected))
+
+        val savedLoanTypes = provideBankLoans() //TODO MOZDA NEPOTREBNA PROVERA?
+        assertThat(savedLoanTypes).hasSize(1)
+
+        savedLoanTypes.forEach { println("Saved Loan Type ID: ${it.id}") }
+    }
+
+    @Test
+    @Order(2)
+    fun `Create - already existing bank loan name - 400`() {
         val bankLoanTypeRequestDTO = BankLoanTypeDTO(
-            "Cash loan",
+            "Home Renovation Loan",
             mutableSetOf(
-                StepDTO("Collecting documents", 1, 14),
-                StepDTO("Verify documents", 2, 7)
+                StepDTO("Collecting documents", 1, 14, 1),
+                StepDTO("Verify documents", 2, 7, 2)
             )
         )
 
@@ -66,55 +95,22 @@ class BankLoanTypeControllerIT @Autowired constructor(
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(bankLoanTypeRequestDTO)
         }.andExpect {
-            status { isCreated() }
-        }.andReturn().response.contentAsString
-
-        val createdBankLoanType: BankLoanTypeDTO = objectMapper.readValue(response, BankLoanTypeDTO::class.java)
-
-        val savedLoanTypes = bankLoanTypeRepository.findAll()
-        assertThat(savedLoanTypes).hasSize(1)
-
-        savedLoanTypes.forEach { println("Saved Loan Type ID: ${it.id}") } // Print all saved IDs
-
-        assertThat(createdBankLoanType.name).isEqualTo(bankLoanTypeRequestDTO.name)
-        assertThat(createdBankLoanType.steps.toList())
-            .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-            .containsExactlyInAnyOrderElementsOf(bankLoanTypeRequestDTO.steps.toList())
-    }
-
-    @Test
-    @Order(2)
-    fun `Create - already existing bank loan name - 400`() {
-        val newBankLoanTypeRequestDTO = BankLoanTypeDTO(
-            "Cash loan",
-            mutableSetOf(
-                StepDTO("Collecting documents", 1, 14, 1),
-                StepDTO("Verify documents", 2, 7, 2)
-            ),
-            1
-        )
-
-        val response = mockMvc.post(url) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(newBankLoanTypeRequestDTO)
-        }.andExpect {
             status { isBadRequest() }
         }.andReturn().response.contentAsString
 
-        assertThat(response).contains("Bank loan type with name[${newBankLoanTypeRequestDTO.name}] already exists!")
+        assertThat(response).contains("Bank loan type with name[${bankLoanTypeRequestDTO.name}] already exists!")
     }
 
-    @Test
+    @ParameterizedTest
     @Order(3)
-    fun `Find by id - successful - 200`() {
-        val allBankLoans = bankLoanTypeRepository.findAll()
-
-        val response = mockMvc.get("$url/${allBankLoans[0].id}")
+    @MethodSource("provideBankLoans")
+    fun `Find by id - successful - 200`(bankLoanType: BankLoanType) {
+        val response = mockMvc.get("$url/${bankLoanType.id}")
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
-
-        val foundBankLoan = objectMapper.readValue(response, BankLoanTypeDTO::class.java)
-        assertThat(foundBankLoan.name).isEqualTo(allBankLoans[0].name)
+        println("Response: $response")
+        //todo napravi dto za request i response i u response skloni jsonignore za id
+        assertThat(objectMapper.readValue<BankLoanTypeDetailsDTO>(response).id).isEqualTo(bankLoanType.id)
     }
 
     @Test
@@ -123,8 +119,11 @@ class BankLoanTypeControllerIT @Autowired constructor(
         val id = 999L
         mockMvc.get("$url/$id")
             .andExpect {
-                status { HttpStatus.NOT_FOUND }
+                status { HttpStatus.NOT_FOUND } //todo promeni na isNotFound
             }
     }
 
+    fun provideBankLoans(): List<BankLoanType> {
+        return bankLoanTypeRepository.findAll()
+    }
 }
