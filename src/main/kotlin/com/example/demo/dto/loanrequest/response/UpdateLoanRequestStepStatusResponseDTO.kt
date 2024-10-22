@@ -13,5 +13,5 @@ data class UpdateLoanRequestStepStatusResponseDTO(
     val amount: BigDecimal,
     var status: LoanRequestStatus,
     val steps: Set<LoanRequestStepDTO> = setOf(),
-    @JsonIgnore val id: Long? = null
+    val id: Long? = null
 )

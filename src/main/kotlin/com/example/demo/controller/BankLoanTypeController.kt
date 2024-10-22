@@ -1,7 +1,7 @@
 package com.example.demo.controller
 
-import com.example.demo.dto.bankloantype.BankLoanTypeDTO
-import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
+import com.example.demo.dto.bankloantype.request.BankLoanTypeRequestDTO
+import com.example.demo.dto.bankloantype.response.BankLoanTypeDetailsResponseDTO
 import com.example.demo.service.bankloantype.BankLoanTypeService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -13,13 +13,13 @@ class BankLoanTypeController(
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO {
-        return bankLoanTypeService.create(bankLoanTypeDTO)
+    fun create(@RequestBody bankLoanTypeRequestDTO: BankLoanTypeRequestDTO): BankLoanTypeRequestDTO {
+        return bankLoanTypeService.create(bankLoanTypeRequestDTO)
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun findById(@PathVariable id: Long): BankLoanTypeDetailsDTO {
+    fun findById(@PathVariable id: Long): BankLoanTypeDetailsResponseDTO {
         return bankLoanTypeService.findById(id)
     }
 
@@ -31,14 +31,14 @@ class BankLoanTypeController(
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun searchByName(@RequestParam name: String): List<BankLoanTypeDTO> {
+    fun searchByName(@RequestParam name: String): List<BankLoanTypeRequestDTO> {
         return bankLoanTypeService.findByName(name)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun update(@PathVariable id: Long, @RequestBody bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO{
-        return bankLoanTypeDTO
+    fun update(@PathVariable id: Long, @RequestBody bankLoanTypeRequestDTO: BankLoanTypeRequestDTO): BankLoanTypeRequestDTO{
+        return bankLoanTypeRequestDTO
             .apply { this.id = id }
             .let(bankLoanTypeService::update)
     }

@@ -2,12 +2,11 @@ package com.example.demo.controller
 
 import com.example.demo.config.DbCleanupService
 import com.example.demo.config.PostgreSqlContainerInitializer
-import com.example.demo.dao.bankloantype.BankLoanTypeDao
-import com.example.demo.dto.bankloantype.BankLoanTypeDTO
-import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
+import com.example.demo.dto.bankloantype.request.BankLoanTypeRequestDTO
+import com.example.demo.dto.bankloantype.response.BankLoanTypeDetailsResponseDTO
 import com.example.demo.dto.step.StepDTO
+import com.example.demo.exception.specific.ErrorCode
 import com.example.demo.model.bankloantype.BankLoanType
-import com.example.demo.model.step.Step
 import com.example.demo.repository.bankloantype.BankLoanTypeRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.get
 import java.io.File
 
@@ -43,7 +41,6 @@ class BankLoanTypeControllerIT @Autowired constructor(
     private val bankLoanTypeRepository: BankLoanTypeRepository
 ) {
     private final val url = "/api/bank-loan-types"
-    lateinit var bankLoanTypeResponse: BankLoanTypeDTO
 
     @BeforeAll
     fun initDB() {
@@ -59,46 +56,48 @@ class BankLoanTypeControllerIT @Autowired constructor(
     @Order(1)
     @CsvFileSource(files = ["src/test/resources/files/csv/create_bank_loan_files.csv"])
     fun `Create - successful - 201`(inputFileUrl: String, outputFileUrl: String) {
+        val count = bankLoanTypeRepository.findAll().size
+
         val requestBody: String = File(inputFileUrl).readText()
 
-        val actual = mockMvc.post(url) {
+        val actualResponse = mockMvc.post(url) {
             contentType = MediaType.APPLICATION_JSON
             content = requestBody
         }.andExpect {
             status { isCreated() }
         }.andReturn().response.contentAsString
 
-        val expected = File(outputFileUrl).readText()
-        assertThat(objectMapper.readValue<BankLoanTypeDTO>(actual))
+        val expectedResponse = File(outputFileUrl).readText()
+        assertThat(objectMapper.readValue<BankLoanTypeRequestDTO>(actualResponse))
             .usingRecursiveComparison()
             .ignoringFields("id")
-            .isEqualTo(objectMapper.readValue<BankLoanTypeDTO>(expected))
+            .isEqualTo(objectMapper.readValue<BankLoanTypeRequestDTO>(expectedResponse))
 
-        val savedLoanTypes = provideBankLoans() //TODO MOZDA NEPOTREBNA PROVERA?
-        assertThat(savedLoanTypes).hasSize(1)
-
-        savedLoanTypes.forEach { println("Saved Loan Type ID: ${it.id}") }
+        val savedLoanTypes = provideBankLoans()
+        assertThat(savedLoanTypes).hasSize(count + 1)
     }
 
     @Test
     @Order(2)
     fun `Create - already existing bank loan name - 400`() {
-        val bankLoanTypeRequestDTO = BankLoanTypeDTO(
-            "Home Renovation Loan",
+        val existingName = bankLoanTypeRepository.findAll().first().name
+
+        val bankLoanTypeRequestDTO = BankLoanTypeRequestDTO(
+            existingName,
             mutableSetOf(
                 StepDTO("Collecting documents", 1, 14, 1),
                 StepDTO("Verify documents", 2, 7, 2)
             )
         )
 
-        val response = mockMvc.post(url) {
+        val actualResponse = mockMvc.post(url) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(bankLoanTypeRequestDTO)
         }.andExpect {
             status { isBadRequest() }
         }.andReturn().response.contentAsString
 
-        assertThat(response).contains("Bank loan type with name[${bankLoanTypeRequestDTO.name}] already exists!")
+        assertThat(actualResponse).contains(ErrorCode.BANK_LOAN_TYPE_NAME_ALREADY_EXISTS_ERROR)
     }
 
     @ParameterizedTest
@@ -106,21 +105,22 @@ class BankLoanTypeControllerIT @Autowired constructor(
     @MethodSource("provideBankLoans")
     fun `Find by id - successful - 200`(bankLoanType: BankLoanType) {
         val response = mockMvc.get("$url/${bankLoanType.id}")
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsString
-        println("Response: $response")
-        //todo napravi dto za request i response i u response skloni jsonignore za id
-        assertThat(objectMapper.readValue<BankLoanTypeDetailsDTO>(response).id).isEqualTo(bankLoanType.id)
+            .andExpect {
+                status { isOk() }
+            }.andReturn().response.contentAsString
+
+        assertThat(objectMapper.readValue<BankLoanTypeDetailsResponseDTO>(response).id).isEqualTo(bankLoanType.id)
     }
 
     @Test
     @Order(4)
     fun `Find by id - not found - 404`() {
         val id = 999L
-        mockMvc.get("$url/$id")
-            .andExpect {
-                status { HttpStatus.NOT_FOUND } //todo promeni na isNotFound
-            }
+        val actualResponse = mockMvc.get("$url/$id")
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsString
+
+        assertThat(actualResponse).contains(ErrorCode.BANK_LOAN_TYPE_DOES_NOT_EXIST_ERROR)
     }
 
     fun provideBankLoans(): List<BankLoanType> {

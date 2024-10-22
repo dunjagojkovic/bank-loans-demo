@@ -6,6 +6,7 @@ import com.example.demo.exception.specific.ErrorCode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -16,11 +17,10 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @ExceptionHandler(HttpStatusException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleHttpStatusException(httpStatusException: HttpStatusException): ErrorDTO {
+    fun handleHttpStatusException(httpStatusException: HttpStatusException): ResponseEntity<ErrorDTO> {
         val errorDTO = ErrorDTO(httpStatusException.message, httpStatusException.code)
             .also(this::logError)
-        return errorDTO
+        return ResponseEntity<ErrorDTO>(errorDTO, httpStatusException.status)
     }
 
     @ExceptionHandler(Exception::class)

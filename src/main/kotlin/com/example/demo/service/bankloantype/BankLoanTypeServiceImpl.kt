@@ -1,8 +1,8 @@
 package com.example.demo.service.bankloantype
 
 import com.example.demo.dao.bankloantype.BankLoanTypeDao
-import com.example.demo.dto.bankloantype.BankLoanTypeDTO
-import com.example.demo.dto.bankloantype.BankLoanTypeDetailsDTO
+import com.example.demo.dto.bankloantype.request.BankLoanTypeRequestDTO
+import com.example.demo.dto.bankloantype.response.BankLoanTypeDetailsResponseDTO
 import com.example.demo.mapper.bankloantype.request.BankLoanTypeMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeDetailsResponseMapper
 import com.example.demo.mapper.bankloantype.response.BankLoanTypeResponseMapper
@@ -19,7 +19,7 @@ class BankLoanTypeServiceImpl(
 ): BankLoanTypeService {
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    override fun create(bankLoanType: BankLoanTypeDTO): BankLoanTypeDTO {
+    override fun create(bankLoanType: BankLoanTypeRequestDTO): BankLoanTypeRequestDTO {
         return bankLoanType
             .let(bankLoanMapper::toEntity)
             .let(bankLoanTypeDao::create)
@@ -29,7 +29,7 @@ class BankLoanTypeServiceImpl(
             }
     }
 
-    override fun findById(id: Long): BankLoanTypeDetailsDTO {
+    override fun findById(id: Long): BankLoanTypeDetailsResponseDTO {
         return id
             .let(bankLoanTypeDao::findById)
             .let(bankLoanTypeDetailsResponseMapper::toDto)
@@ -42,14 +42,14 @@ class BankLoanTypeServiceImpl(
             }
     }
 
-    override fun findByName(name: String): List<BankLoanTypeDTO> {
+    override fun findByName(name: String): List<BankLoanTypeRequestDTO> {
         return name
             .let(bankLoanTypeDao::findByName)
             .map(bankLoanTypeResponseMapper::toDto)
     }
 
-    override fun update(bankLoanTypeDTO: BankLoanTypeDTO): BankLoanTypeDTO {
-       return bankLoanTypeDTO
+    override fun update(bankLoanTypeRequestDTO: BankLoanTypeRequestDTO): BankLoanTypeRequestDTO {
+       return bankLoanTypeRequestDTO
             .let(bankLoanMapper::toEntity)
             .let(bankLoanTypeDao::update)
             .let(bankLoanTypeResponseMapper::toDto)
